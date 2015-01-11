@@ -28,6 +28,7 @@ class CachedAdapter implements AdapterInterface
     {
         $this->adapter = $adapter;
         $this->cache = $cache;
+        $this->cache->load();
     }
 
     /**
@@ -168,7 +169,7 @@ class CachedAdapter implements AdapterInterface
         $result = $this->adapter->setVisibility($path, $visibility);
 
         if ($result !== false) {
-            $this->cache->updateObject($path, compact('path', 'visibility'));
+            $this->cache->updateObject($path, compact('path', 'visibility'), true);
         }
 
         return $result;

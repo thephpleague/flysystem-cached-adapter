@@ -24,6 +24,7 @@ class CachedAdapterSpec extends ObjectBehavior
     {
         $this->adapter = $adapter;
         $this->cache = $cache;
+        $this->cache->load()->shouldBeCalled();
         $this->beConstructedWith($adapter, $cache);
     }
 
@@ -193,9 +194,10 @@ class CachedAdapterSpec extends ObjectBehavior
     {
         $dirname = 'dirname';
         $config = new Config();
-        $this->adapter->createDir($dirname, $config)->willReturn(true);
-        $this->cache->updateObject($dirname, ['type' => 'dir', 'path' => $dirname]);
-        $this->createDir($dirname, $config)->shouldBe(true);
+        $response = ['path' => $dirname, 'type' => 'dir'];
+        $this->adapter->createDir($dirname, $config)->willReturn($response);
+        $this->cache->updateObject($dirname, $response, true)->shouldBeCalled();
+        $this->createDir($dirname, $config)->shouldBe($response);
     }
 
     public function it_should_ignore_create_dir_fails()
@@ -208,11 +210,11 @@ class CachedAdapterSpec extends ObjectBehavior
 
     public function it_should_cache_set_visibility()
     {
-        $dirname = 'delete';
+        $path = 'path.txt';
         $visibility = AdapterInterface::VISIBILITY_PUBLIC;
-        $this->adapter->setVisibility($dirname, $visibility)->willReturn(true);
-        $this->cache->updateObject($dirname, ['type' => 'dir', 'visibility' => $visibility]);
-        $this->setVisibility($dirname, $visibility)->shouldBe(true);
+        $this->adapter->setVisibility($path, $visibility)->willReturn(true);
+        $this->cache->updateObject($path, ['path' => $path, 'visibility' => $visibility], true)->shouldBeCalled();
+        $this->setVisibility($path, $visibility)->shouldBe(true);
     }
 
     public function it_should_ignore_set_visibility_fails()
