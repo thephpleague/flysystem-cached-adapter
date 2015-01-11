@@ -1,0 +1,25 @@
+{
+    "name": "league/flysystem-cached-adapter",
+    "description": "An adapter decorator to enable meta-data caching.",
+    "autoload": {
+        "psr-4": {
+            "League\\Flysystem\\Cached\\": "src/"
+        }
+    },
+    "require": {
+        "league/flysystem": "~1.0@dev",
+        "henrikbjorn/phpspec-code-coverage": "~1.0@dev"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "~2.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "frankdejonge",
+            "email": "info@frenky.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
