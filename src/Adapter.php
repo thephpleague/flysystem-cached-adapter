@@ -5,7 +5,6 @@ namespace League\Flysystem\Cached;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\CacheInterface;
 use League\Flysystem\Config;
-use League\Flysystem\Util;
 
 class Adapter implements AdapterInterface
 {
@@ -275,8 +274,8 @@ class Adapter implements AdapterInterface
     /**
      * Call a method and cache the response.
      *
-     * @param string $method
-     * @param string $path
+     * @param  string $method
+     * @param  string $path
      * @return mixed
      */
     protected function callWithFallback($method, $path)
