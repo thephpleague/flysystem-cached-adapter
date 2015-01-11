@@ -6,7 +6,7 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\CacheInterface;
 use League\Flysystem\Config;
 
-class Adapter implements AdapterInterface
+class CachedAdapter implements AdapterInterface
 {
     /**
      * @var AdapterInterface

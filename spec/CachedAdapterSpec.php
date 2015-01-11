@@ -8,7 +8,7 @@ use League\Flysystem\Config;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-class AdapterSpec extends ObjectBehavior
+class CachedAdapterSpec extends ObjectBehavior
 {
     /**
      * @var AdapterInterface
@@ -29,7 +29,7 @@ class AdapterSpec extends ObjectBehavior
 
     public function it_is_initializable()
     {
-        $this->shouldHaveType('League\Flysystem\Cached\Adapter');
+        $this->shouldHaveType('League\Flysystem\Cached\CachedAdapter');
         $this->shouldHaveType('League\Flysystem\AdapterInterface');
     }
 

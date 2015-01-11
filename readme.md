@@ -1,4 +1,4 @@
-# Flysystem Cached Adapter
+# Flysystem Cached CachedAdapter
 
 [![Author](http://img.shields.io/badge/author-@frankdejonge-blue.svg?style=flat-square)](https://twitter.com/frankdejonge)
 [![Build Status](https://img.shields.io/travis/thephpleague/flysystem-cached-adapter/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/flysystem-cached-adapter)
@@ -18,8 +18,8 @@ The adapter decorator caches metadata and directory listings.
 
 use League\Flysystem\Cache\Memcached;
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\Cached\Adapter;
+use League\Flysystem\Cached\CachedAdapter;
 
-$adapter = new Adapter(new Local(__DIR__.'/something/'), new Memcached($memcachedInstance));
+$adapter = new CachedAdapter(new Local(__DIR__.'/something/'), new Memcached($memcachedInstance));
 
 ```
