@@ -289,7 +289,6 @@ class Adapter implements AdapterInterface
         $result = $this->adapter->{$method}($path);
 
         if ($result) {
-            $path = $path;
             $object = $result + compact('path');
             $this->cache->updateObject($path, $object, true);
         }
