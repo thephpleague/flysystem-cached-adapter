@@ -3,7 +3,6 @@
 namespace League\Flysystem\Cached;
 
 use League\Flysystem\AdapterInterface;
-use League\Flysystem\CacheInterface;
 use League\Flysystem\Config;
 
 class CachedAdapter implements AdapterInterface

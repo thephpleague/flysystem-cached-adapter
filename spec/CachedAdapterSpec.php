@@ -3,7 +3,7 @@
 namespace spec\League\Flysystem\Cached;
 
 use League\Flysystem\AdapterInterface;
-use League\Flysystem\CacheInterface;
+use League\Flysystem\Cached\CacheInterface;
 use League\Flysystem\Config;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

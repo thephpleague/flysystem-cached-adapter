@@ -9,8 +9,8 @@ formatter.name: pretty
 code_coverage:
   format:
     - html
-    -
-    - clover
+    - text
+    - php
   output:
     html: coverage
-    clover: coverage.xml
+    php: clover/phpspec.cov
