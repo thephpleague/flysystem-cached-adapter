@@ -10,7 +10,7 @@ code_coverage:
   format:
     - html
     - text
-    - php
+    - clover
   output:
     html: coverage
-    php: clover/phpspec.cov
+    clover: clover/phpspec.xml
