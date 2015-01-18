@@ -18,7 +18,7 @@ class CachedAdapter implements AdapterInterface
     private $cache;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param AdapterInterface $adapter
      * @param CacheInterface   $cache
@@ -274,8 +274,9 @@ class CachedAdapter implements AdapterInterface
     /**
      * Call a method and cache the response.
      *
-     * @param  string $method
-     * @param  string $path
+     * @param string $method
+     * @param string $path
+     *
      * @return mixed
      */
     protected function callWithFallback($method, $path)
