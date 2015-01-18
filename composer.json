@@ -7,13 +7,14 @@
         }
     },
     "require": {
-        "league/flysystem": "~1.0@dev",
+        "league/flysystem": "1.0.0-alpha1",
         "henrikbjorn/phpspec-code-coverage": "~1.0@dev"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.1",
         "phpunit/phpunit": "~4.1",
         "mockery/mockery": "~0.9",
+        "predis/predis": "~1.0",
         "tedivm/stash": "~0.12"
     },
     "license": "MIT",
@@ -22,7 +23,5 @@
             "name": "frankdejonge",
             "email": "info@frenky.net"
         }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    ]
 }

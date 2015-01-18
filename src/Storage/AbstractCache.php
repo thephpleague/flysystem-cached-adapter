@@ -2,7 +2,7 @@
 
 namespace League\Flysystem\Cached\Storage;
 
-use League\Flysystem\CacheInterface;
+use League\Flysystem\Cached\CacheInterface;
 use League\Flysystem\Util;
 
 abstract class AbstractCache implements CacheInterface
