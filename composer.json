@@ -7,15 +7,15 @@
         }
     },
     "require": {
-        "league/flysystem": "~1.0@alpha",
-        "henrikbjorn/phpspec-code-coverage": "~1.0@dev"
+        "league/flysystem": "~1.0@alpha"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.1",
         "phpunit/phpunit": "~4.1",
         "mockery/mockery": "~0.9",
         "predis/predis": "~1.0",
-        "tedivm/stash": "~0.12"
+        "tedivm/stash": "~0.12",
+        "henrikbjorn/phpspec-code-coverage": "~1.0@dev"
     },
     "license": "MIT",
     "authors": [
