@@ -47,7 +47,6 @@ class MemoryCacheTests extends PHPUnit_Framework_TestCase
 
         $output = $cache->cleanContents($input);
         $this->assertEquals($expected, $output);
-
     }
 
     public function testGetForStorage()
@@ -120,6 +119,7 @@ class MemoryCacheTests extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider metaGetterProvider
+     *
      * @param $method
      * @param $key
      * @param $value

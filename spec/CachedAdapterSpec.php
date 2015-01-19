@@ -6,7 +6,6 @@ use League\Flysystem\AdapterInterface;
 use League\Flysystem\Cached\CacheInterface;
 use League\Flysystem\Config;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class CachedAdapterSpec extends ObjectBehavior
 {

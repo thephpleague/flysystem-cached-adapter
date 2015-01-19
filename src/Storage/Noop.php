@@ -2,7 +2,6 @@
 
 namespace League\Flysystem\Cached\Storage;
 
-
 class Noop extends AbstractCache
 {
     /**
