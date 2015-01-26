@@ -17,13 +17,4 @@ composer require league/flysystem-cached-adapter
 
 ## Usage
 
-```php
-<?php
-
-use League\Flysystem\Cache\Memcached;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Cached\CachedAdapter;
-
-$adapter = new CachedAdapter(new Local(__DIR__.'/something/'), new Memcached($memcachedInstance));
-
-```
+[Check out the docs.](http://flysystem.thephpleague.com/caching/)
