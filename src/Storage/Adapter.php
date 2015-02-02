@@ -80,8 +80,11 @@ class Adapter extends AbstractCache
      */
     public function load()
     {
-        if (($file = $this->adapter->read($this->file)) !== null) {
-            $this->setFromStorage($file['contents']);
+        if ($this->adapter->has($this->file)) {
+            $file = $this->adapter->read($this->file);
+            if ($file && !empty($file['contents'])) {
+                $this->setFromStorage($file['contents']);
+            }
         }
     }
 
