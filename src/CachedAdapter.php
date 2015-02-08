@@ -35,7 +35,8 @@ class CachedAdapter implements AdapterInterface
      *
      * @return AdapterInterface adapter
      */
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->adapter;
     }
 
