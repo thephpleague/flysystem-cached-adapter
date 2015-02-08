@@ -31,6 +31,15 @@ class CachedAdapter implements AdapterInterface
     }
 
     /**
+     * Get the Adapter.
+     *
+     * @return AdapterInterface adapter
+     */
+    public function getAdapter() {
+        return $this->adapter;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function write($path, $contents, Config $config)
