@@ -31,9 +31,7 @@ class CachedAdapter implements AdapterInterface
     }
 
     /**
-     * Get the Adapter.
-     *
-     * @return AdapterInterface adapter
+     * {@inheritdoc}
      */
     public function getAdapter()
     {
