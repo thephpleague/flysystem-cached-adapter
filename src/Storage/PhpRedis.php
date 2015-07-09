@@ -7,7 +7,7 @@ use Redis;
 class PhpRedis extends AbstractCache
 {
     /**
-     * @var \Redis PhpRedis Client
+     * @var Redis PhpRedis Client
      */
     protected $client;
 
@@ -24,9 +24,9 @@ class PhpRedis extends AbstractCache
     /**
      * Constructor.
      *
-     * @param \Redis|null $client phpredis client
-     * @param string      $key    storage key
-     * @param int|null    $expire seconds until cache expiration
+     * @param Redis|null $client phpredis client
+     * @param string     $key    storage key
+     * @param int|null   $expire seconds until cache expiration
      */
     public function __construct(Redis $client = null, $key = 'flysystem', $expire = null)
     {
@@ -40,7 +40,9 @@ class PhpRedis extends AbstractCache
      */
     public function load()
     {
-        if (($contents = $this->client->get($this->key)) !== false) {
+        $contents = $this->client->get($this->key);
+
+        if ($contents !== false) {
             $this->setFromStorage($contents);
         }
     }
