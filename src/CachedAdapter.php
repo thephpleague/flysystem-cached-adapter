@@ -304,4 +304,20 @@ class CachedAdapter implements AdapterInterface
 
         return $result;
     }
+
+    /**
+     * Call any method for plugin features.
+     *
+     * @param array $arguments [ $path ]
+     *
+     * @return array|false
+     */
+    public function __call($method, $arguments)
+    {
+        if (method_exists($this->adapter, $method)) {
+            return $this->callWithFallback($method, $arguments[0]);
+        }
+
+        return false;
+    }
 }
