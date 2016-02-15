@@ -404,4 +404,21 @@ abstract class AbstractCache implements CacheInterface
             $this->cache[$object['path']] = $object;
         }
     }
+
+    /**
+     * Call any method for plugin features.
+     *
+     * @param array $arguments [ $path ]
+     *
+     * @return array|false
+     */
+    public function __call($method, $arguments)
+    {
+        $path = $arguments[0];
+        if (isset($this->cache[$path][$method])) {
+            return $this->cache[$path];
+        }
+
+        return false;
+    }
 }
