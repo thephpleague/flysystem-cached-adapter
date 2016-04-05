@@ -146,7 +146,7 @@ abstract class AbstractCache implements CacheInterface
      */
     public function has($path)
     {
-        if (array_key_exists($path, $this->cache)) {
+        if ($path !== false && array_key_exists($path, $this->cache)) {
             return $this->cache[$path] !== false;
         }
 
