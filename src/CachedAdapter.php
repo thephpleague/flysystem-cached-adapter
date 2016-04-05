@@ -31,11 +31,23 @@ class CachedAdapter implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get the underlying Adapter implementation.
+     *
+     * @return AdapterInterface
      */
     public function getAdapter()
     {
         return $this->adapter;
+    }
+    
+    /**
+     * Get the used Cache implementation.
+     *
+     * @return CacheInterface
+     */
+    public function getCache()
+    {
+        return $this->cache;
     }
 
     /**
