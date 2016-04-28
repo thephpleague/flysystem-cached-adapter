@@ -225,4 +225,15 @@ class MemoryCacheTests extends PHPUnit_Framework_TestCase
 
         $this->assertCount(3, $cache->listContents('other', true));
     }
+
+    public function testCacheMissIfContentsIsFalse()
+    {
+        $cache = new Memory();
+        $cache->updateObject('path.txt', [
+            'path' => 'path.txt',
+            'contents' => false,
+        ], true);
+
+        $this->assertFalse($cache->read('path.txt'));
+    }
 }

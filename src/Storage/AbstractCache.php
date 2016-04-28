@@ -160,7 +160,7 @@ abstract class AbstractCache implements CacheInterface
      */
     public function read($path)
     {
-        if (isset($this->cache[$path]['contents'])) {
+        if (isset($this->cache[$path]['contents']) && $this->cache[$path]['contents'] !== false) {
             return $this->cache[$path];
         }
 
