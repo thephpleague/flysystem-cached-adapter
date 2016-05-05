@@ -225,4 +225,27 @@ class MemoryCacheTests extends PHPUnit_Framework_TestCase
 
         $this->assertCount(3, $cache->listContents('other', true));
     }
+
+    public function testCacheExpiry()
+    {
+        $cache_reflection = new ReflectionObject(new Memory());
+        $property = $cache_reflection->getProperty('cache');
+        $property->setAccessible(TRUE);
+        $cache = $cache_reflection->newInstance();
+
+        /** @var \League\Flysystem\Cached\Storage\Memory $cache */
+        $cache->storeContents('dirname', [
+            ['path' => 'dirname', 'type' => 'dir'],
+            ['path' => 'dirname/nested', 'type' => 'dir'],
+            ['path' => 'dirname/nested/deep', 'type' => 'dir'],
+            ['path' => 'other/nested/deep', 'type' => 'dir'],
+        ], true);
+        $cache_contents = $property->getValue($cache);
+
+        // Simulate a cache item expiring or being evicted.
+        unset($cache_contents['dirname/nested']);
+        $property->setValue($cache, $cache_contents);
+
+        $this->assertFalse($cache->isComplete('dirname', TRUE));
+    }
 }
