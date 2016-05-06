@@ -212,7 +212,7 @@ class MemoryCacheTests extends PHPUnit_Framework_TestCase
         $this->assertTrue($cache->has('newpath.txt'));
     }
 
-    public function testComplextListContents()
+    public function testComplexListContents()
     {
         $cache = new Memory();
         $cache->storeContents('', [
