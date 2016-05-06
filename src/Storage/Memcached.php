@@ -56,4 +56,18 @@ class Memcached extends AbstractCache
         $expiration = $this->expire === null ? 0 : time() + $this->expire;
         $this->memcached->set($this->key, $contents, $expiration);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isComplete($dirname, $recursive) {
+        return FALSE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setComplete($dirname, $recursive) {
+        // The memcache adapter can never be complete due to cache evictions.
+    }
 }
