@@ -65,16 +65,16 @@ abstract class AbstractCache implements CacheInterface
     {
         $directories = [$directory];
 
-        foreach ($contents as $index => $object) {
+        foreach ($contents as $object) {
             $this->updateObject($object['path'], $object);
             $object = $this->cache[$object['path']];
 
-            if ($recursive && (empty($directory) || strpos($object['dirname'], $directory) !== false)) {
+            if ($recursive && $this->pathIsInDirectory($directory, $object['path'])) {
                 $directories[] = $object['dirname'];
             }
         }
 
-        foreach ($directories as $directory) {
+        foreach (array_unique($directories) as $directory) {
             $this->setComplete($directory, $recursive);
         }
 
@@ -127,14 +127,10 @@ abstract class AbstractCache implements CacheInterface
         $result = [];
 
         foreach ($this->cache as $object) {
-            if ($object['dirname'] !== $dirname) {
-                continue;
-            }
-
-            $result[] = $object;
-
-            if ($recursive && $object['type'] === 'dir') {
-                $result = array_merge($result, $this->listContents($object['path'], true));
+            if ($object['dirname'] === $dirname) {
+                $result[] = $object;
+            } elseif ($recursive && $this->pathIsInDirectory($dirname, $object['path'])) {
+                $result[] = $object;
             }
         }
 
@@ -216,14 +212,12 @@ abstract class AbstractCache implements CacheInterface
     public function deleteDir($dirname)
     {
         foreach ($this->cache as $path => $object) {
-            if (strpos($path, $dirname) === 0) {
+            if ($this->pathIsInDirectory($dirname, $path) || $path === $dirname) {
                 unset($this->cache[$path]);
             }
         }
 
-        if (isset($this->complete[$dirname])) {
-            unset($this->complete[$dirname]);
-        }
+        unset($this->complete[$dirname]);
 
         $this->autosave();
     }
@@ -403,5 +397,18 @@ abstract class AbstractCache implements CacheInterface
             $object['type'] = 'dir';
             $this->cache[$object['path']] = $object;
         }
+    }
+
+    /**
+     * Determines if the path is inside the directory.
+     *
+     * @param string $directory
+     * @param string $path
+     *
+     * @return bool
+     */
+    protected function pathIsInDirectory($directory, $path)
+    {
+        return $directory === '' || strpos($path, $directory . '/') === 0;
     }
 }
