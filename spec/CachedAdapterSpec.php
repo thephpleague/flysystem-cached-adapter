@@ -43,10 +43,11 @@ class CachedAdapterSpec extends ObjectBehavior
 
     public function it_should_cache_writes()
     {
+        $type = 'file';
         $path = 'path.txt';
         $contents = 'contents';
         $config = new Config();
-        $response = compact('path', 'contents');
+        $response = compact('path', 'contents', 'type');
         $this->adapter->write($path, $contents, $config)->willReturn($response);
         $this->cache->updateObject($path, $response, true)->shouldBeCalled();
         $this->write($path, $contents, $config)->shouldBe($response);
@@ -54,10 +55,11 @@ class CachedAdapterSpec extends ObjectBehavior
 
     public function it_should_cache_streamed_writes()
     {
+        $type = 'file';
         $path = 'path.txt';
         $stream = tmpfile();
         $config = new Config();
-        $response = compact('path', 'stream');
+        $response = compact('path', 'stream', 'type');
         $this->adapter->writeStream($path, $stream, $config)->willReturn($response);
         $this->cache->updateObject($path, ['contents' => false] + $response, true)->shouldBeCalled();
         $this->writeStream($path, $stream, $config)->shouldBe($response);
@@ -66,10 +68,11 @@ class CachedAdapterSpec extends ObjectBehavior
 
     public function it_should_cache_streamed_updates()
     {
+        $type = 'file';
         $path = 'path.txt';
         $stream = tmpfile();
         $config = new Config();
-        $response = compact('path', 'stream');
+        $response = compact('path', 'stream', 'type');
         $this->adapter->updateStream($path, $stream, $config)->willReturn($response);
         $this->cache->updateObject($path, ['contents' => false] + $response, true)->shouldBeCalled();
         $this->updateStream($path, $stream, $config)->shouldBe($response);
@@ -97,10 +100,11 @@ class CachedAdapterSpec extends ObjectBehavior
 
     public function it_should_cache_updated()
     {
+        $type = 'file';
         $path = 'path.txt';
         $contents = 'contents';
         $config = new Config();
-        $response = compact('path', 'contents');
+        $response = compact('path', 'contents', 'type');
         $this->adapter->update($path, $contents, $config)->willReturn($response);
         $this->cache->updateObject($path, $response, true)->shouldBeCalled();
         $this->update($path, $contents, $config)->shouldBe($response);
