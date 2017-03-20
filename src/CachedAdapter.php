@@ -248,7 +248,7 @@ class CachedAdapter implements AdapterInterface
 
         $result = $this->adapter->listContents($directory, $recursive);
 
-        if ($result) {
+        if ($result !== false) {
             $this->cache->storeContents($directory, $result, $recursive);
         }
 
