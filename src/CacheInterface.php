@@ -9,6 +9,9 @@ interface CacheInterface extends ReadInterface
     /**
      * Check whether the directory listing of a given directory is complete.
      *
+     * Cache adapters that don't have reliable storage (like memcache) should
+     * always return false in this method.
+     *
      * @param string $dirname
      * @param bool   $recursive
      *
