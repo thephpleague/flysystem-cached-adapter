@@ -17,4 +17,4 @@ composer require league/flysystem-cached-adapter
 
 ## Usage
 
-[Check out the docs.](http://flysystem.thephpleague.com/caching/)
+[Check out the docs.](https://flysystem.thephpleague.com/docs/advanced/caching/)
