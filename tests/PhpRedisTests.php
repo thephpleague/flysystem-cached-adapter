@@ -1,8 +1,9 @@
 <?php
 
 use League\Flysystem\Cached\Storage\PhpRedis;
+use PHPUnit\Framework\TestCase;
 
-class PhpRedisTests extends PHPUnit_Framework_TestCase
+class PhpRedisTests extends TestCase
 {
     public function testLoadFail()
     {

@@ -2,8 +2,9 @@
 
 use League\Flysystem\Cached\Storage\Memory;
 use League\Flysystem\Util;
+use PHPUnit\Framework\TestCase;
 
-class MemoryCacheTests extends PHPUnit_Framework_TestCase
+class MemoryCacheTests extends TestCase
 {
     public function testAutosave()
     {

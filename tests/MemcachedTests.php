@@ -1,8 +1,9 @@
 <?php
 
 use League\Flysystem\Cached\Storage\Memcached;
+use PHPUnit\Framework\TestCase;
 
-class MemcachedTests extends PHPUnit_Framework_TestCase
+class MemcachedTests extends TestCase
 {
     public function testLoadFail()
     {

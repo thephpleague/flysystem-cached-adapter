@@ -1,8 +1,9 @@
 <?php
 
 use League\Flysystem\Cached\CachedAdapter;
+use PHPUnit\Framework\TestCase;
 
-class InspectionTests extends PHPUnit_Framework_TestCase {
+class InspectionTests extends TestCase {
 
     public function testGetAdapter()
     {

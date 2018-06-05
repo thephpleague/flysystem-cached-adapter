@@ -1,8 +1,9 @@
 <?php
 
 use League\Flysystem\Cached\Storage\Psr6Cache;
+use PHPUnit\Framework\TestCase;
 
-class Psr6CacheTests extends PHPUnit_Framework_TestCase
+class Psr6CacheTests extends TestCase
 {
     public function testLoadFail()
     {

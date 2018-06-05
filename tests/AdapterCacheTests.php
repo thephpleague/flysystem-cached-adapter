@@ -1,8 +1,9 @@
 <?php
 
 use League\Flysystem\Cached\Storage\Adapter;
+use PHPUnit\Framework\TestCase;
 
-class AdapterCacheTests extends PHPUnit_Framework_TestCase
+class AdapterCacheTests extends TestCase
 {
     public function testLoadFail()
     {
