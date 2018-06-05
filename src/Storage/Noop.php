@@ -52,7 +52,7 @@ class Noop extends AbstractCache
     /**
      * {@inheritdoc}
      */
-    public function storeContents($directory, array $contents, $recursive)
+    public function storeContents($directory, array $contents, $recursive = false)
     {
         return $contents;
     }
