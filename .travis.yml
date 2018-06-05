@@ -1,23 +1,29 @@
 language: php
 
 php:
-  - 5.4
   - 5.5
   - 5.6
-  - hhvm
+  - 7.0
+  - 7.1
+  - 7.2
 
-before_install:
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then rm phpspec.yml; fi;'
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then mv phpspec.hhvm.yml phpspec.yml; fi;'
+matrix:
+  allow_failures:
+  - php: 5.5
+
+env:
+  - COMPOSER_OPTS=""
+  - COMPOSER_OPTS="--prefer-lowest"
 
 install:
-  - travis_retry composer install --no-interaction --prefer-source
+  - if [[ "${TRAVIS_PHP_VERSION}" == "5.5" ]]; then composer require phpunit/phpunit:^4.8.36 phpspec/phpspec:^2 --prefer-dist --update-with-dependencies; fi
+  - if [[ "${TRAVIS_PHP_VERSION}" == "7.2" ]]; then composer require phpunit/phpunit:^6.0 --prefer-dist --update-with-dependencies; fi
+  - travis_retry composer update --prefer-dist $COMPOSER_OPTS
+
 script:
   - vendor/bin/phpspec run
   - vendor/bin/phpunit
 
 after_script:
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then composer require phpunit/phpcov=*; fi;'
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then wget https://scrutinizer-ci.com/ocular.phar; fi;'
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php ocular.phar code-coverage:upload --format=php-clover ./clover/phpunit.xml; fi;'
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php ocular.phar code-coverage:upload --format=php-clover ./clover/phpspec.xml; fi;'
+  - wget https://scrutinizer-ci.com/ocular.phar'
+  - php ocular.phar code-coverage:upload --format=php-clover ./clover/phpunit.xml'

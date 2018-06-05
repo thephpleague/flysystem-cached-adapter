@@ -11,12 +11,11 @@
         "psr/cache": "^1.0.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.1",
-        "phpunit/phpunit": "~4.1",
+        "phpspec/phpspec": "^3.4",
+        "phpunit/phpunit": "^5.7",
         "mockery/mockery": "~0.9",
         "predis/predis": "~1.0",
-        "tedivm/stash": "~0.12",
-        "henrikbjorn/phpspec-code-coverage": "~1.0@dev"
+        "tedivm/stash": "~0.12"
     },
     "suggest": {
       "ext-phpredis": "Pure C implemented extension for PHP"
