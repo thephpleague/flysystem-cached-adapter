@@ -7,14 +7,23 @@ php:
   - 7.1
   - 7.2
 
+matrix:
+  allow_failures:
+  - php: 5.5
+
+env:
+  - COMPOSER_OPTS=""
+  - COMPOSER_OPTS="--prefer-lowest"
+
 install:
-  - travis_retry composer install --no-interaction --prefer-dist
+  - if [[ "${TRAVIS_PHP_VERSION}" == "5.5" ]]; then composer require phpunit/phpunit:^4.8.36 phpspec/phpspec:^2 --prefer-dist --update-with-dependencies; fi
+  - if [[ "${TRAVIS_PHP_VERSION}" == "7.2" ]]; then composer require phpunit/phpunit:^6.0 --prefer-dist --update-with-dependencies; fi
+  - travis_retry composer update --prefer-dist $COMPOSER_OPTS
+
 script:
   - vendor/bin/phpspec run
   - vendor/bin/phpunit
 
 after_script:
-  - composer require phpunit/phpcov=*'
   - wget https://scrutinizer-ci.com/ocular.phar'
   - php ocular.phar code-coverage:upload --format=php-clover ./clover/phpunit.xml'
-  - php ocular.phar code-coverage:upload --format=php-clover ./clover/phpspec.xml'

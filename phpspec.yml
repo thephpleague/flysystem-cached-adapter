@@ -3,14 +3,4 @@ suites:
       cached_adapter_suite:
         namespace: League\Flysystem\Cached
         psr4_prefix: League\Flysystem\Cached
-extensions:
-  - PhpSpec\Extension\CodeCoverageExtension
 formatter.name: pretty
-code_coverage:
-  format:
-    - html
-    - text
-    - clover
-  output:
-    html: coverage
-    clover: clover/phpspec.xml
