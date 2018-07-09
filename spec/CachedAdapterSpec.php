@@ -248,6 +248,16 @@ class CachedAdapterSpec extends ObjectBehavior
         $this->has($path)->shouldBe(false);
     }
 
+    public function it_should_delete_when_metadata_is_missing()
+    {
+        $path = 'path.txt';
+        $this->cache->has($path)->willReturn(true);
+        $this->cache->getSize($path)->willReturn(['path' => $path]);
+        $this->adapter->getSize($path)->willReturn($response = ['path' => $path, 'size' => 1024]);
+        $this->cache->updateObject($path, $response, true)->shouldBeCalled();
+        $this->getSize($path)->shouldBe($response);
+    }
+
     public function it_should_cache_has()
     {
         $this->cache->has($path = 'path.txt')->willReturn(null);

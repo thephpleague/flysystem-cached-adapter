@@ -226,7 +226,7 @@ class CachedAdapter implements AdapterInterface
      */
     public function read($path)
     {
-        return $this->callWithFallback('read', $path);
+        return $this->callWithFallback('contents', $path, 'read');
     }
 
     /**
@@ -260,7 +260,7 @@ class CachedAdapter implements AdapterInterface
      */
     public function getMetadata($path)
     {
-        return $this->callWithFallback('getMetadata', $path);
+        return $this->callWithFallback(null, $path, 'getMetadata');
     }
 
     /**
@@ -268,7 +268,7 @@ class CachedAdapter implements AdapterInterface
      */
     public function getSize($path)
     {
-        return $this->callWithFallback('getSize', $path);
+        return $this->callWithFallback('size', $path, 'getSize');
     }
 
     /**
@@ -276,7 +276,7 @@ class CachedAdapter implements AdapterInterface
      */
     public function getMimetype($path)
     {
-        return $this->callWithFallback('getMimetype', $path);
+        return $this->callWithFallback('mimetype', $path, 'getMimetype');
     }
 
     /**
@@ -284,7 +284,7 @@ class CachedAdapter implements AdapterInterface
      */
     public function getTimestamp($path)
     {
-        return $this->callWithFallback('getTimestamp', $path);
+        return $this->callWithFallback('timestamp', $path, 'getTimestamp');
     }
 
     /**
@@ -292,22 +292,23 @@ class CachedAdapter implements AdapterInterface
      */
     public function getVisibility($path)
     {
-        return $this->callWithFallback('getVisibility', $path);
+        return $this->callWithFallback('visibility', $path, 'getVisibility');
     }
 
     /**
      * Call a method and cache the response.
      *
-     * @param string $method
+     * @param string $property
      * @param string $path
+     * @param string $method
      *
      * @return mixed
      */
-    protected function callWithFallback($method, $path)
+    protected function callWithFallback($property, $path, $method)
     {
         $result = $this->cache->{$method}($path);
 
-        if ($result !== false) {
+        if ($result !== false && ($property === null || array_key_exists($property, $result))) {
             return $result;
         }
 
