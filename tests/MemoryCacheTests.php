@@ -54,9 +54,9 @@ class MemoryCacheTests extends TestCase
     {
         $cache = new Memory();
         $input = [[
-            'path' => 'path.txt',
+            'path'       => 'path.txt',
             'visibility' => 'public',
-            'type' => 'file',
+            'type'       => 'file',
         ]];
 
         $cache->storeContents('', $input, true);
@@ -81,7 +81,7 @@ class MemoryCacheTests extends TestCase
         $cache = new Memory();
         $cache->setComplete('dirname', true);
         $cache->updateObject('path.txt', [
-            'path' => 'path.txt',
+            'path'       => 'path.txt',
             'visibility' => 'public',
         ]);
         $cache->flush();
@@ -130,10 +130,10 @@ class MemoryCacheTests extends TestCase
         $cache = new Memory();
         $this->assertFalse($cache->{$method}('path.txt'));
         $cache->updateObject('path.txt', $object = [
-            'path' => 'path.txt',
-            'type' => 'file',
-            $key => $value,
-        ] + Util::pathinfo('path.txt'), true);
+                'path' => 'path.txt',
+                'type' => 'file',
+                $key   => $value,
+            ] + Util::pathinfo('path.txt'), true);
         $this->assertEquals($object, $cache->{$method}('path.txt'));
         $this->assertEquals($object, $cache->getMetadata('path.txt'));
     }
@@ -182,7 +182,7 @@ class MemoryCacheTests extends TestCase
     {
         $cache = new Memory();
         $cache->storeContents('dirname', [
-            ['path' => 'dirname/path.txt', 'type' => 'file']
+            ['path' => 'dirname/path.txt', 'type' => 'file'],
         ]);
         $this->assertTrue($cache->isComplete('dirname', false));
         $this->assertTrue($cache->has('dirname/path.txt'));
@@ -227,11 +227,26 @@ class MemoryCacheTests extends TestCase
         $this->assertCount(3, $cache->listContents('other', true));
     }
 
+    public function testComplextListContentsWithDeletedFile()
+    {
+        $cache = new Memory();
+        $cache->storeContents('', [
+            ['path' => 'dirname', 'type' => 'dir'],
+            ['path' => 'dirname/file.txt', 'type' => 'file'],
+            ['path' => 'other', 'type' => 'dir'],
+            ['path' => 'other/file.txt', 'type' => 'file'],
+            ['path' => 'other/another_file.txt', 'type' => 'file'],
+        ]);
+
+        $cache->delete('other/another_file.txt');
+        $this->assertCount(4, $cache->listContents('', true));
+    }
+
     public function testCacheMissIfContentsIsFalse()
     {
         $cache = new Memory();
         $cache->updateObject('path.txt', [
-            'path' => 'path.txt',
+            'path'     => 'path.txt',
             'contents' => false,
         ], true);
 
