@@ -24,15 +24,17 @@ class PhpRedis extends AbstractCache
     /**
      * Constructor.
      *
-     * @param Redis|null $client phpredis client
-     * @param string     $key    storage key
-     * @param int|null   $expire seconds until cache expiration
+     * @param Redis|null        $client phpredis client
+     * @param string            $key    storage key
+     * @param int|null          $expire seconds until cache expiration
+     * @param Config|array|null $config settings values
      */
-    public function __construct(Redis $client = null, $key = 'flysystem', $expire = null)
+    public function __construct(Redis $client = null, $key = 'flysystem', $expire = null, $config = [])
     {
         $this->client = $client ?: new Redis();
         $this->key = $key;
         $this->expire = $expire;
+        $this->setConfig($config);
     }
 
     /**
