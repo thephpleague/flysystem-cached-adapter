@@ -24,15 +24,17 @@ class Memcached extends AbstractCache
     /**
      * Constructor.
      *
-     * @param \Memcached $memcached
-     * @param string     $key       storage key
-     * @param int|null   $expire    seconds until cache expiration
+     * @param \Memcached        $memcached
+     * @param string            $key       storage key
+     * @param int|null          $expire    seconds until cache expiration
+     * @param Config|array|null $config    settings values
      */
-    public function __construct(NativeMemcached $memcached, $key = 'flysystem', $expire = null)
+    public function __construct(NativeMemcached $memcached, $key = 'flysystem', $expire = null, $config = [])
     {
         $this->key = $key;
         $this->expire = $expire;
         $this->memcached = $memcached;
+        $this->setConfig($config);
     }
 
     /**

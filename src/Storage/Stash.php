@@ -24,15 +24,17 @@ class Stash extends AbstractCache
     /**
      * Constructor.
      *
-     * @param \Stash\Pool $pool
-     * @param string      $key    storage key
-     * @param int|null    $expire seconds until cache expiration
+     * @param \Stash\Pool       $pool
+     * @param string            $key    storage key
+     * @param int|null          $expire seconds until cache expiration
+     * @param Config|array|null $config settings values
      */
-    public function __construct(Pool $pool, $key = 'flysystem', $expire = null)
+    public function __construct(Pool $pool, $key = 'flysystem', $expire = null, $config = [])
     {
         $this->key = $key;
         $this->expire = $expire;
         $this->pool = $pool;
+        $this->setConfig($config);
     }
 
     /**

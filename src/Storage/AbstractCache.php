@@ -3,6 +3,7 @@
 namespace League\Flysystem\Cached\Storage;
 
 use League\Flysystem\Cached\CacheInterface;
+use League\Flysystem\Config;
 use League\Flysystem\Util;
 
 abstract class AbstractCache implements CacheInterface
@@ -23,6 +24,11 @@ abstract class AbstractCache implements CacheInterface
     protected $complete = [];
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * Destructor.
      */
     public function __destruct()
@@ -30,6 +36,26 @@ abstract class AbstractCache implements CacheInterface
         if (! $this->autosave) {
             $this->save();
         }
+    }
+
+    /**
+     * Get the config object or null.
+     *
+     * @return Config|null config
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Set the config.
+     *
+     * @param Config|array|null $config
+     */
+    public function setConfig($config)
+    {
+        $this->config = Util::ensureConfig($config);
     }
 
     /**
@@ -67,7 +93,8 @@ abstract class AbstractCache implements CacheInterface
 
         foreach ($contents as $object) {
             $this->updateObject($object['path'], $object);
-            $object = $this->cache[$object['path']];
+
+            $object = $this->cache[$this->pathCase($object['path'])];
 
             if ($recursive && $this->pathIsInDirectory($directory, $object['path'])) {
                 $directories[] = $object['dirname'];
@@ -90,11 +117,13 @@ abstract class AbstractCache implements CacheInterface
      */
     public function updateObject($path, array $object, $autosave = false)
     {
+        $key = $this->pathCase($path);
+
         if (! $this->has($path)) {
-            $this->cache[$path] = Util::pathinfo($path);
+            $this->cache[$key] = Util::pathinfo($path);
         }
 
-        $this->cache[$path] = array_merge($this->cache[$path], $object);
+        $this->cache[$key] = array_merge($this->cache[$key], $object);
 
         if ($autosave) {
             $this->autosave();
@@ -110,7 +139,7 @@ abstract class AbstractCache implements CacheInterface
      */
     public function storeMiss($path)
     {
-        $this->cache[$path] = false;
+        $this->cache[$this->pathCase($path)] = false;
         $this->autosave();
     }
 
@@ -124,15 +153,17 @@ abstract class AbstractCache implements CacheInterface
      */
     public function listContents($dirname = '', $recursive = false)
     {
+        $key = $this->pathCase($dirname);
         $result = [];
 
         foreach ($this->cache as $object) {
             if ($object === false) {
                 continue;
             }
-            if ($object['dirname'] === $dirname) {
+
+            if ($this->pathCase($object['dirname']) === $key) {
                 $result[] = $object;
-            } elseif ($recursive && $this->pathIsInDirectory($dirname, $object['path'])) {
+            } elseif ($recursive && $this->pathIsInDirectory($key, $object['path'])) {
                 $result[] = $object;
             }
         }
@@ -145,8 +176,10 @@ abstract class AbstractCache implements CacheInterface
      */
     public function has($path)
     {
-        if ($path !== false && array_key_exists($path, $this->cache)) {
-            return $this->cache[$path] !== false;
+        $key = $this->pathCase($path);
+
+        if ($path !== false && array_key_exists($key, $this->cache)) {
+            return $this->cache[$key] !== false;
         }
 
         if ($this->isComplete(Util::dirname($path), false)) {
@@ -159,8 +192,10 @@ abstract class AbstractCache implements CacheInterface
      */
     public function read($path)
     {
-        if (isset($this->cache[$path]['contents']) && $this->cache[$path]['contents'] !== false) {
-            return $this->cache[$path];
+        $key = $this->pathCase($path);
+
+        if (isset($this->cache[$key]['contents']) && $this->cache[$key]['contents'] !== false) {
+            return $this->cache[$key];
         }
 
         return false;
@@ -179,14 +214,20 @@ abstract class AbstractCache implements CacheInterface
      */
     public function rename($path, $newpath)
     {
-        if ($this->has($path)) {
-            $object = $this->cache[$path];
-            unset($this->cache[$path]);
-            $object['path'] = $newpath;
-            $object = array_merge($object, Util::pathinfo($newpath));
-            $this->cache[$newpath] = $object;
-            $this->autosave();
+        if (!$this->has($path)) {
+            return;
         }
+
+        $key = $this->pathCase($path);
+        $object = $this->cache[$key];
+
+        unset($this->cache[$key]);
+
+        $object['path'] = $newpath;
+        $object = array_merge($object, Util::pathinfo($newpath));
+
+        $this->cache[$this->pathCase($newpath)] = $object;
+        $this->autosave();
     }
 
     /**
@@ -194,11 +235,14 @@ abstract class AbstractCache implements CacheInterface
      */
     public function copy($path, $newpath)
     {
-        if ($this->has($path)) {
-            $object = $this->cache[$path];
-            $object = array_merge($object, Util::pathinfo($newpath));
-            $this->updateObject($newpath, $object, true);
+        if (!$this->has($path)) {
+            return;
         }
+
+        $object = $this->cache[$this->pathCase($path)];
+        $object = array_merge($object, Util::pathinfo($newpath));
+
+        $this->updateObject($newpath, $object, true);
     }
 
     /**
@@ -214,9 +258,13 @@ abstract class AbstractCache implements CacheInterface
      */
     public function deleteDir($dirname)
     {
+        $dirname = $this->pathCase($dirname);
+
         foreach ($this->cache as $path => $object) {
-            if ($this->pathIsInDirectory($dirname, $path) || $path === $dirname) {
-                unset($this->cache[$path]);
+            $key = $this->pathCase($path);
+
+            if ($this->pathIsInDirectory($dirname, $path) || $key === $dirname) {
+                unset($this->cache[$key]);
             }
         }
 
@@ -230,18 +278,19 @@ abstract class AbstractCache implements CacheInterface
      */
     public function getMimetype($path)
     {
-        if (isset($this->cache[$path]['mimetype'])) {
-            return $this->cache[$path];
+        $key = $this->pathCase($path);
+
+        if (isset($this->cache[$key]['mimetype'])) {
+            return $this->cache[$key];
         }
 
         if (! $result = $this->read($path)) {
             return false;
         }
 
-        $mimetype = Util::guessMimeType($path, $result['contents']);
-        $this->cache[$path]['mimetype'] = $mimetype;
+        $this->cache[$key]['mimetype'] = Util::guessMimeType($path, $result['contents']);
 
-        return $this->cache[$path];
+        return $this->cache[$key];
     }
 
     /**
@@ -249,8 +298,10 @@ abstract class AbstractCache implements CacheInterface
      */
     public function getSize($path)
     {
-        if (isset($this->cache[$path]['size'])) {
-            return $this->cache[$path];
+        $key = $this->pathCase($path);
+
+        if (isset($this->cache[$key]['size'])) {
+            return $this->cache[$key];
         }
 
         return false;
@@ -261,8 +312,10 @@ abstract class AbstractCache implements CacheInterface
      */
     public function getTimestamp($path)
     {
-        if (isset($this->cache[$path]['timestamp'])) {
-            return $this->cache[$path];
+        $key = $this->pathCase($path);
+
+        if (isset($this->cache[$key]['timestamp'])) {
+            return $this->cache[$key];
         }
 
         return false;
@@ -273,8 +326,10 @@ abstract class AbstractCache implements CacheInterface
      */
     public function getVisibility($path)
     {
-        if (isset($this->cache[$path]['visibility'])) {
-            return $this->cache[$path];
+        $key = $this->pathCase($path);
+
+        if (isset($this->cache[$key]['visibility'])) {
+            return $this->cache[$key];
         }
 
         return false;
@@ -285,8 +340,10 @@ abstract class AbstractCache implements CacheInterface
      */
     public function getMetadata($path)
     {
-        if (isset($this->cache[$path]['type'])) {
-            return $this->cache[$path];
+        $key = $this->pathCase($path);
+
+        if (isset($this->cache[$key]['type'])) {
+            return $this->cache[$key];
         }
 
         return false;
@@ -297,11 +354,13 @@ abstract class AbstractCache implements CacheInterface
      */
     public function isComplete($dirname, $recursive)
     {
-        if (! array_key_exists($dirname, $this->complete)) {
+        $key = $this->pathCase($dirname);
+
+        if (! array_key_exists($key, $this->complete)) {
             return false;
         }
 
-        if ($recursive && $this->complete[$dirname] !== 'recursive') {
+        if ($recursive && $this->complete[$key] !== 'recursive') {
             return false;
         }
 
@@ -313,7 +372,7 @@ abstract class AbstractCache implements CacheInterface
      */
     public function setComplete($dirname, $recursive)
     {
-        $this->complete[$dirname] = $recursive ? 'recursive' : true;
+        $this->complete[$this->pathCase($dirname)] = $recursive ? 'recursive' : true;
     }
 
     /**
@@ -333,7 +392,7 @@ abstract class AbstractCache implements CacheInterface
 
         foreach ($contents as $path => $object) {
             if (is_array($object)) {
-                $contents[$path] = array_intersect_key($object, $cachedProperties);
+                $contents[$this->pathCase($path)] = array_intersect_key($object, $cachedProperties);
             }
         }
 
@@ -394,12 +453,12 @@ abstract class AbstractCache implements CacheInterface
      */
     public function ensureParentDirectories($path)
     {
-        $object = $this->cache[$path];
+        $object = $this->cache[$this->pathCase($path)];
 
-        while ($object['dirname'] !== '' && ! isset($this->cache[$object['dirname']])) {
+        while ($object['dirname'] !== '' && ! isset($this->cache[$this->pathCase($object['dirname'])])) {
             $object = Util::pathinfo($object['dirname']);
             $object['type'] = 'dir';
-            $this->cache[$object['path']] = $object;
+            $this->cache[$this->pathCase($object['path'])] = $object;
         }
     }
 
@@ -413,6 +472,22 @@ abstract class AbstractCache implements CacheInterface
      */
     protected function pathIsInDirectory($directory, $path)
     {
-        return $directory === '' || strpos($path, $directory . '/') === 0;
+        return $directory === '' || strpos($this->pathCase($path), $this->pathCase($directory) . '/') === 0;
+    }
+
+    /**
+     * Return the path string checking case_sensitive config value
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    protected function pathCase($path)
+    {
+        if ($this->config && $this->config->get('case_sensitive', true) === false) {
+            $path = strtolower($path);
+        }
+
+        return $path;
     }
 }

@@ -25,15 +25,17 @@ class Adapter extends AbstractCache
     /**
      * Constructor.
      *
-     * @param AdapterInterface $adapter adapter
-     * @param string           $file    the file to cache to
-     * @param int|null         $expire  seconds until cache expiration
+     * @param AdapterInterface  $adapter adapter
+     * @param string            $file    the file to cache to
+     * @param int|null          $expire  seconds until cache expiration
+     * @param Config|array|null $config  settings values
      */
-    public function __construct(AdapterInterface $adapter, $file, $expire = null)
+    public function __construct(AdapterInterface $adapter, $file, $expire = null, $config = [])
     {
         $this->adapter = $adapter;
         $this->file = $file;
         $this->setExpire($expire);
+        $this->setConfig($config);
     }
 
     /**

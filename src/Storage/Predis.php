@@ -24,15 +24,17 @@ class Predis extends AbstractCache
     /**
      * Constructor.
      *
-     * @param \Predis\Client $client predis client
-     * @param string         $key    storage key
-     * @param int|null       $expire seconds until cache expiration
+     * @param \Predis\Client    $client predis client
+     * @param string            $key    storage key
+     * @param int|null          $expire seconds until cache expiration
+     * @param Config|array|null $config settings values
      */
-    public function __construct(Client $client = null, $key = 'flysystem', $expire = null)
+    public function __construct(Client $client = null, $key = 'flysystem', $expire = null, $config = [])
     {
         $this->client = $client ?: new Client();
         $this->key = $key;
         $this->expire = $expire;
+        $this->setConfig($config);
     }
 
     /**
