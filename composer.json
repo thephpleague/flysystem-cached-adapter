@@ -7,7 +7,7 @@
         }
     },
     "require": {
-        "league/flysystem": "~1.0",
+        "league/flysystem": "~3.0",
         "psr/cache": "^1.0.0"
     },
     "require-dev": {
