@@ -23,16 +23,6 @@ abstract class AbstractCache implements CacheInterface
     protected $complete = [];
 
     /**
-     * Destructor.
-     */
-    public function __destruct()
-    {
-        if (! $this->autosave) {
-            $this->save();
-        }
-    }
-
-    /**
      * Get the autosave setting.
      *
      * @return bool autosave
