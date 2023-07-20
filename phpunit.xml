@@ -8,7 +8,6 @@
          convertWarningsToExceptions="true"
          processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="true"
          verbose="true"
 >
     <testsuites>
@@ -21,9 +20,4 @@
             <directory suffix=".php">./src/</directory>
         </whitelist>
     </filter>
-    <logging>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
-        <log type="coverage-html" target="coverage" showUncoveredFiles="true"/>
-        <log type="coverage-clover" target="clover/phpunit.xml" showUncoveredFiles="true"/>
-    </logging>
 </phpunit>

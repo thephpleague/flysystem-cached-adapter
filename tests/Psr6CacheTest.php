@@ -36,10 +36,11 @@ class Psr6CacheTests extends TestCase
         $pool = Mockery::mock('Psr\Cache\CacheItemPoolInterface');
         $item = Mockery::mock('Psr\Cache\CacheItemInterface');
         $item->shouldReceive('expiresAfter')->once()->with($ttl);
-        $item->shouldReceive('set')->once()->andReturn($response);
+        $item->shouldReceive('set')->once()->andReturn($item); // Changed this line
         $pool->shouldReceive('getItem')->once()->andReturn($item);
         $pool->shouldReceive('save')->once()->with($item);
         $cache = new Psr6Cache($pool, 'foo', $ttl);
         $cache->save();
     }
+
 }

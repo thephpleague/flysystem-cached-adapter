@@ -1,55 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Flysystem\Cached\Storage;
 
 use Psr\Cache\CacheItemPoolInterface;
 
 class Psr6Cache extends AbstractCache
 {
-    /**
-     * @var CacheItemPoolInterface
-     */
-    private $pool;
+    private CacheItemPoolInterface $pool;
+    protected string $key;
+    protected ?int $ttl;
 
-    /**
-     * @var string storage key
-     */
-    protected $key;
-
-    /**
-     * @var int|null seconds until cache expiration
-     */
-    protected $expire;
-
-    /**
-     * Constructor.
-     *
-     * @param CacheItemPoolInterface $pool
-     * @param string                 $key    storage key
-     * @param int|null               $expire seconds until cache expiration
-     */
-    public function __construct(CacheItemPoolInterface $pool, $key = 'flysystem', $expire = null)
+    public function __construct(CacheItemPoolInterface $pool, string $key = 'flysystem', ?int $ttl = null)
     {
         $this->pool = $pool;
         $this->key = $key;
-        $this->expire = $expire;
+        $this->ttl = $ttl;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function save()
+    public function save(): void
     {
         $item = $this->pool->getItem($this->key);
         $item->set($this->getForStorage());
-        $item->expiresAfter($this->expire);
+        $item->expiresAfter($this->ttl);
         $this->pool->save($item);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load()
+    public function load(): void
     {
         $item = $this->pool->getItem($this->key);
         if ($item->isHit()) {

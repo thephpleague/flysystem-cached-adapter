@@ -1,44 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\Flysystem\Cached\Storage;
 
 use Redis;
 
 class PhpRedis extends AbstractCache
 {
-    /**
-     * @var Redis PhpRedis Client
-     */
-    protected $client;
+    protected Redis $client;
+    protected string $key;
+    protected ?int $ttl;
 
-    /**
-     * @var string storage key
-     */
-    protected $key;
-
-    /**
-     * @var int|null seconds until cache expiration
-     */
-    protected $expire;
-
-    /**
-     * Constructor.
-     *
-     * @param Redis|null $client phpredis client
-     * @param string     $key    storage key
-     * @param int|null   $expire seconds until cache expiration
-     */
-    public function __construct(Redis $client = null, $key = 'flysystem', $expire = null)
+    public function __construct(?Redis $client = null, string $key = 'flysystem', ?int $ttl = null)
     {
-        $this->client = $client ?: new Redis();
+        $this->client = $client ?? new Redis();
         $this->key = $key;
-        $this->expire = $expire;
+        $this->ttl = $ttl;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load()
+    public function load(): void
     {
         $contents = $this->client->get($this->key);
 
@@ -47,16 +28,13 @@ class PhpRedis extends AbstractCache
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function save()
+    public function save(): void
     {
         $contents = $this->getForStorage();
         $this->client->set($this->key, $contents);
 
-        if ($this->expire !== null) {
-            $this->client->expire($this->key, $this->expire);
+        if ($this->ttl !== null) {
+            $this->client->expire($this->key, $this->ttl);
         }
     }
 }
