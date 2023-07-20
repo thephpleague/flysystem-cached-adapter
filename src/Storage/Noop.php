@@ -7,7 +7,7 @@ class Noop extends AbstractCache
     /**
      * {@inheritdoc}
      */
-    protected $autosave = false;
+    protected bool $autosave = false;
 
     /**
      * {@inheritdoc}
