@@ -1,0 +1,14 @@
+version: '3.2'
+
+name: flysystem-cache-adapter
+
+services:
+
+  php:
+    container_name: php
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/app
+    command: [ "tail", "-f", "/dev/null" ]

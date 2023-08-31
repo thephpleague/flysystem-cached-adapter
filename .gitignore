@@ -1,4 +1,3 @@
-coverage
-coverage.xml
 composer.lock
 vendor
+.phpunit.cache
