@@ -16,3 +16,13 @@ It supports Flysystem v3 and is currently maintained, which makes it superior to
 ```bash
 composer require jgivoni/flysystem-cache-adapter
 ```
+
+## Example usage
+
+```php
+$cache = new \Symfony\Component\Cache\Adapter\RedisAdapter(...);
+
+$filesystemAdapter = new \League\Flysystem\AwsS3V3\AwsS3V3Adapter(...);
+
+$cachedFilesystemAdapter = new \jgivon\Flysysten\Cache\CacheAdapter($filesystemAdapter, $cache);
+```
