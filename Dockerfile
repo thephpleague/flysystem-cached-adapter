@@ -16,5 +16,3 @@ RUN install-php-extensions \
     @composer-2
 
 WORKDIR /app
-
-ENTRYPOINT ["tail", "-f", "/dev/null"]

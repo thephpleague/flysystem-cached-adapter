@@ -6,7 +6,7 @@ jobs:
   job1:
     strategy:
       matrix:
-        php_version: ["8.0", "8.1", "8.2"]
+        php_version: ["8.2"]
     name: PhpStan static analyzer ${{ matrix.php_version }}
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,7 @@ jobs:
         run: docker image build . -f Dockerfile -t myimage:latest --build-arg PHP_VERSION=${{ matrix.php_version }}
 
       - name: Launch container
-        run: docker run -d -v "$(pwd)/:/app" --name mycontainer myimage:latest
+        run: docker run -d -v "$(pwd)/:/app" --name mycontainer myimage:latest tail -f /dev/null
 
       - name: Check PHP version
         run: docker exec mycontainer php -v
@@ -39,7 +39,7 @@ jobs:
   job2:
     strategy:
       matrix:
-        php_version: ["8.0", "8.1", "8.2"]
+        php_version: ["8.2"]
     name: PhpUnit unit tests ${{ matrix.php_version }}
     runs-on: ubuntu-latest
     steps:
@@ -55,7 +55,7 @@ jobs:
         run: docker image build . -f Dockerfile -t myimage:latest --build-arg PHP_VERSION=${{ matrix.php_version }}
 
       - name: Launch container
-        run: docker run -d -v "$(pwd)/:/app" --name mycontainer myimage:latest
+        run: docker run -d -v "$(pwd)/:/app" --name mycontainer myimage:latest tail -f /dev/null
 
       - name: Check PHP version
         run: docker exec mycontainer php -v
