@@ -13,9 +13,24 @@
             "jgivoni\\Flysystem\\Cache\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\jgivoni\\Flysystem\\Cache\\": "tests/"
+        }
+    },
     "require": {
         "php": "^8.2",
         "league/flysystem": "^3.0",
         "psr/cache": "^3.0"
+    },
+    "require-dev": {
+        "ext-xdebug": "*",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.3",
+        "mockery/mockery": "^1.6",
+        "league/flysystem-adapter-test-utilities": "^3.15",
+        "league/flysystem-memory": "^3.15",
+        "symfony/cache": "^6.3",
+        "league/flysystem-aws-s3-v3": "^3.15"
     }
 }
