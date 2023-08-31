@@ -1,0 +1,70 @@
+name: CI code checks
+
+on: [push]
+
+jobs:
+  job1:
+    strategy:
+      matrix:
+        php_version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2"]
+    name: PhpStan static analyzer ${{ matrix.php_version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v3
+
+      - name: Enable caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        # Deprecation warnings are expected...
+        continue-on-error: true
+
+      - name: Build image
+        run: docker image build . -f Dockerfile -t myimage:latest --build-arg PHP_VERSION=${{ matrix.php_version }}
+
+      - name: Launch container
+        run: docker run -d -v "$(pwd)/:/app" --name mycontainer myimage:latest
+
+      - name: Check PHP version
+        run: docker exec mycontainer php -v
+
+      - name: Check composer.json validity
+        run: docker exec mycontainer composer validate
+
+      - name: Install dependencies
+        run: docker exec mycontainer composer install
+
+      - name: Run static analyzer
+        run: docker exec -e XDEBUG_MODE=off mycontainer vendor/bin/phpstan analyze
+
+  job2:
+    strategy:
+      matrix:
+        php_version: ["7.2", "7.3", "7.4", "8.0", "8.1", "8.2"]
+    name: PhpUnit unit tests ${{ matrix.php_version }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v3
+
+      - name: Enable caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        # Deprecation warnings are expected...
+        continue-on-error: true
+
+      - name: Build image
+        run: docker image build . -f Dockerfile -t myimage:latest --build-arg PHP_VERSION=${{ matrix.php_version }}
+
+      - name: Launch container
+        run: docker run -d -v "$(pwd)/:/app" --name mycontainer myimage:latest
+
+      - name: Check PHP version
+        run: docker exec mycontainer php -v
+
+      - name: Check composer.json validity
+        run: docker exec mycontainer composer validate
+
+      - name: Install dependencies
+        run: docker exec mycontainer composer install
+
+      - name: Run unit tests
+        run: docker exec mycontainer vendor/bin/phpunit

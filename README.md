@@ -1,6 +1,6 @@
 # Flysystem Cache Adapter
 
-This adapter is a decorator that caches file metadata to improve performance.
+A PSR-6 compliant adapter decorator for Flysystem v3 that caches file metadata to improve performance.
 
 ## Why this library?
 
