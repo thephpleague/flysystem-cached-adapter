@@ -1,5 +1,7 @@
 # Flysystem Cache Adapter
 
+![QA](https://github.com/jgivoni/flysystem-cache-adapter/actions/workflows/ci.yml/badge.svg)
+
 A PSR-6 compliant adapter decorator for Flysystem v3 that caches file metadata to improve performance.
 
 ## Why this library?
