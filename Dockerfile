@@ -1,5 +1,6 @@
 # Dockerfile to build image for development and testing
-FROM php:8.2-cli-alpine
+ARG PHP_VERSION=8.2
+FROM php:${PHP_VERSION}-cli-alpine
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
@@ -15,3 +16,5 @@ RUN install-php-extensions \
     @composer-2
 
 WORKDIR /app
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
