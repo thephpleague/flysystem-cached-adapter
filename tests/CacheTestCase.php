@@ -5,6 +5,7 @@ namespace tests\jgivoni\Flysystem\Cache;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use jgivoni\Flysystem\Cache\CacheAdapter;
 use League\Flysystem\Config;
+use League\Flysystem\StorageAttributes;
 use League\Flysystem\DirectoryAttributes;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\Visibility;
@@ -54,6 +55,9 @@ class CacheTestCase extends TestCase
         ]);
     }
 
+    /**
+     * @param array<string, FileAttributes|DirectoryAttributes> $items 
+     */
     protected function setupCache(array $items): void
     {
         foreach ($items as $path => $storageAttributes) {
@@ -65,6 +69,9 @@ class CacheTestCase extends TestCase
         }
     }
 
+    /**
+     * @param array<string, string> $items 
+     */
     protected function setupFiles(array $items): void
     {
         foreach ($items as $path => $contents) {
@@ -72,6 +79,9 @@ class CacheTestCase extends TestCase
         }
     }
 
+    /**
+     * @param array<string, StorageAttributes|FileAttributes|DirectoryAttributes|null> $items 
+     */
     protected function assertCachedItems(array $items): void
     {
         foreach ($items as $path => $expectedStorageAttributes) {
