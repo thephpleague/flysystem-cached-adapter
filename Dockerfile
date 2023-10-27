@@ -1,5 +1,5 @@
 # Dockerfile to build image for development and testing
-ARG PHP_VERSION=8.2
+ARG PHP_VERSION=8.1
 FROM php:${PHP_VERSION}-cli-alpine
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
