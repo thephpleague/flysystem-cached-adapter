@@ -21,42 +21,21 @@ trait CacheItemsTrait
     static string $CACHE_KEY_PREFIX = 'flysystem_item_';
     static string $CACHE_KEY_HASH_SALT = '563ce5132194441b';
 
-    /** @var array<CacheItemInterface> */
-    protected $cacheItems = [];
-
     protected function getCacheItem(string $path): CacheItemInterface
     {
-        if (!isset($this->cacheItems[$path])) {
-            $key = self::getCacheItemKey($path);
+        $key = self::getCacheItemKey($path);
 
-            $this->cacheItems[$path] = $this->cache->getItem($key);
-        }
-
-        return $this->cacheItems[$path];
+        return $this->cache->getItem($key);
     }
 
     protected function saveCacheItem(CacheItemInterface $cacheItem): void
     {
         $this->cache->save($cacheItem);
-
-        /** @var StorageAttributes $storageAttributes */
-        $storageAttributes = $cacheItem->get();
-
-        $path = $storageAttributes->path();
-
-        $this->cacheItems[$path] = $cacheItem;
     }
 
     protected function deleteCacheItem(CacheItemInterface $cacheItem): void
     {
         $this->cache->deleteItem($cacheItem->getKey());
-
-        /** @var StorageAttributes $storageAttributes */
-        $storageAttributes = $cacheItem->get();
-
-        $path = $storageAttributes->path();
-
-        unset($this->cacheItems[$path]);
     }
 
     public static function getCacheItemKey(string $path): string

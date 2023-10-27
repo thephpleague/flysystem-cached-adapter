@@ -312,22 +312,22 @@ class CacheAdapter implements FilesystemAdapter, ChecksumProvider
         $algo = $config->get('checksum_algo');
         $metadataKey = isset($algo) ? 'checksum_' . $algo : 'checksum';
 
-        $attributeAccessor = function (FileAttributes $fileAttributes) use ($metadataKey) {
+        $attributeAccessor = function (StorageAttributes $storageAttributes) use ($metadataKey) {
             if (\is_a($this->adapter, 'League\Flysystem\AwsS3V3\AwsS3V3Adapter')) {
                 // Special optimization for AWS S3, but won't break if adapter not installed
-                $etag = $fileAttributes->extraMetadata()['ETag'] ?? \null;
+                $etag = $storageAttributes->extraMetadata()['ETag'] ?? \null;
                 if (isset($etag)) {
                     $checksum = trim($etag, '" ');
                 }
             }
 
-            return $checksum ?? $fileAttributes->extraMetadata()[$metadataKey] ?? \null;
+            return $checksum ?? $storageAttributes->extraMetadata()[$metadataKey] ?? \null;
         };
 
         $fileAttributes = $this->getFileAttributes(
             path: $path,
             loader: function () use ($path, $config, $metadataKey) {
-                // This part is "mirrored" from FileSystem class to provide the fallback mechanism 
+                // This part is "mirrored" from FileSystem class to provide the fallback mechanism
                 // and be able to cache the result
                 try {
                     if (!$this->adapter instanceof ChecksumProvider) {
