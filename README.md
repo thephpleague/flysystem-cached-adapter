@@ -24,5 +24,5 @@ $cache = new \Symfony\Component\Cache\Adapter\RedisAdapter(...);
 
 $filesystemAdapter = new \League\Flysystem\AwsS3V3\AwsS3V3Adapter(...);
 
-$cachedFilesystemAdapter = new \jgivoni\Flysysten\Cache\CacheAdapter($filesystemAdapter, $cache);
+$cachedFilesystemAdapter = new \jgivoni\Flysystem\Cache\CacheAdapter($filesystemAdapter, $cache);
 ```
