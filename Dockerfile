@@ -10,8 +10,6 @@ RUN apk add --no-cache bash
 
 RUN install-php-extensions \
     opcache \
-    redis \
-    igbinary \
     xdebug \
     @composer-2
 
