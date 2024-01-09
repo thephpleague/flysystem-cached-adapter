@@ -9,6 +9,10 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      args:
+        PHP_VERSION: "${PHP_VERSION}"
+    env_file:
+      - .env
     volumes:
       - .:/app
     command: [ "tail", "-f", "/dev/null" ]
