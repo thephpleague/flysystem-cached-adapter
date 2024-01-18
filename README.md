@@ -3,8 +3,11 @@
 ![QA](https://github.com/jgivoni/flysystem-cache-adapter/actions/workflows/ci.yml/badge.svg)
 
 ## Changelog
-### Version 3.1.1
+### Version 3.1.2
 - [Bugfix when retrieving metadata on file which is a cached folder](https://github.com/jgivoni/flysystem-cache-adapter/issues/11)
+
+### Version 3.1.1
+- [Development support for Symfony 7](https://github.com/jgivoni/flysystem-cache-adapter/issues/9)
 
 ### Version 3.1
 - Supports the newest PHP 8.3
