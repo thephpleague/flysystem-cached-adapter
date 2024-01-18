@@ -6,6 +6,7 @@ use jgivoni\Flysystem\Cache\CacheAdapter;
 use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 use League\Flysystem\Config;
 use League\Flysystem\FileAttributes;
+use League\Flysystem\UnableToProvideChecksum;
 use Mockery;
 use Mockery\MockInterface;
 
@@ -71,5 +72,27 @@ class GetChecksum_Test extends CacheTestCase
         yield 'checksum is cached' => ['fully-cached-file-with-checksum', 'my-cached-checksum'];
         yield 'checksum is not cached but aws ETag is' => ['partially-cached-file-with-aws-etag', 'my-cached-aws-etag'];
         yield 'file is not cached' => ['non-cached-file', 'my-aws-etag'];
+    }
+
+    /**
+     * @test
+     * @dataProvider errorDataProvider
+     */
+    public function error(string $path): void
+    {
+        $this->expectException(UnableToProvideChecksum::class);
+
+        $this->cacheAdapter->checksum($path, new Config);
+    }
+
+    /**
+     * 
+     * @return iterable<array<mixed>>
+     */
+    public static function errorDataProvider(): iterable
+    {
+        yield 'File not found' => ['nonexistingfile'];
+        yield 'Path is directory (cached)' => ['cached-directory'];
+        yield 'Path is directory (non-cached)' => ['non-cached-directory'];
     }
 }

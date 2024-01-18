@@ -4,6 +4,7 @@ namespace tests\jgivoni\Flysystem\Cache;
 
 use League\Flysystem\FileAttributes;
 use League\Flysystem\StorageAttributes;
+use League\Flysystem\UnableToRetrieveMetadata;
 use League\Flysystem\Visibility;
 
 class GetVisibility_Test extends CacheTestCase
@@ -41,5 +42,27 @@ class GetVisibility_Test extends CacheTestCase
         $this->assertCachedItems([
             $path => new FileAttributes($path, visibility: Visibility::PUBLIC),
         ]);
+    }
+
+    /**
+     * @test
+     * @dataProvider errorDataProvider
+     */
+    public function error(string $path): void
+    {
+        $this->expectException(UnableToRetrieveMetadata::class);
+
+        $this->cacheAdapter->visibility($path);
+    }
+
+    /**
+     * 
+     * @return iterable<array<mixed>>
+     */
+    public static function errorDataProvider(): iterable
+    {
+        yield 'File not found' => ['nonexistingfile'];
+        yield 'Path is directory (cached)' => ['cached-directory'];
+        yield 'Path is directory (non-cached)' => ['non-cached-directory'];
     }
 }

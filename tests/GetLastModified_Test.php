@@ -2,6 +2,8 @@
 
 namespace tests\jgivoni\Flysystem\Cache;
 
+use League\Flysystem\UnableToRetrieveMetadata;
+
 class GetLastModified_Test extends CacheTestCase
 {
     /** 
@@ -22,5 +24,27 @@ class GetLastModified_Test extends CacheTestCase
     public static function dataProvider(): iterable
     {
         yield 'partially cached file was updated' => ['partially-cached-file'];
+    }
+
+    /**
+     * @test
+     * @dataProvider errorDataProvider
+     */
+    public function error(string $path): void
+    {
+        $this->expectException(UnableToRetrieveMetadata::class);
+
+        $this->cacheAdapter->lastModified($path);
+    }
+
+    /**
+     * 
+     * @return iterable<array<mixed>>
+     */
+    public static function errorDataProvider(): iterable
+    {
+        yield 'File not found' => ['nonexistingfile'];
+        yield 'Path is directory (cached)' => ['cached-directory'];
+        yield 'Path is directory (non-cached)' => ['non-cached-directory'];
     }
 }

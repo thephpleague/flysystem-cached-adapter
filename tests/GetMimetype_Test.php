@@ -4,7 +4,9 @@ namespace tests\jgivoni\Flysystem\Cache;
 
 use League\Flysystem\FileAttributes;
 use League\Flysystem\StorageAttributes;
+use League\Flysystem\UnableToRetrieveMetadata;
 use League\Flysystem\Visibility;
+use Psr\Cache\InvalidArgumentException;
 
 class GetMimetype_Test extends CacheTestCase
 {
@@ -41,5 +43,27 @@ class GetMimetype_Test extends CacheTestCase
         $this->assertCachedItems([
             $path => new FileAttributes($path, mimeType: 'text/plain'),
         ]);
+    }
+
+    /**
+     * @test
+     * @dataProvider errorDataProvider
+     */
+    public function error(string $path): void
+    {
+        $this->expectException(UnableToRetrieveMetadata::class);
+
+        $this->cacheAdapter->mimeType($path);
+    }
+
+    /**
+     * 
+     * @return iterable<array<mixed>>
+     */
+    public static function errorDataProvider(): iterable
+    {
+        yield 'File not found' => ['nonexistingfile'];
+        yield 'Path is directory (cached)' => ['cached-directory'];
+        yield 'Path is directory (non-cached)' => ['non-cached-directory'];
     }
 }

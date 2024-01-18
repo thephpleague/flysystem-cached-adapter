@@ -10,8 +10,11 @@ use League\Flysystem\DirectoryAttributes;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\StorageAttributes;
+use League\Flysystem\UnableToProvideChecksum;
 use League\Flysystem\UnableToReadFile;
+use League\Flysystem\UnableToRetrieveMetadata;
 use Psr\Cache\CacheItemPoolInterface;
+use RuntimeException;
 
 class CacheAdapter implements FilesystemAdapter, ChecksumProvider
 {
@@ -245,15 +248,19 @@ class CacheAdapter implements FilesystemAdapter, ChecksumProvider
      */
     public function visibility(string $path): FileAttributes
     {
-        return $this->getFileAttributes(
-            path: $path,
-            loader: function () use ($path) {
-                return $this->adapter->visibility($path);
-            },
-            attributeAccessor: function (FileAttributes $fileAttributes) {
-                return $fileAttributes->visibility();
-            },
-        );
+        try {
+            return $this->getFileAttributes(
+                path: $path,
+                loader: function () use ($path) {
+                    return $this->adapter->visibility($path);
+                },
+                attributeAccessor: function (FileAttributes $fileAttributes) {
+                    return $fileAttributes->visibility();
+                },
+            );
+        } catch (RuntimeException $e) {
+            throw UnableToRetrieveMetadata::visibility($path, $e->getMessage(), $e);
+        }
     }
 
     /**
@@ -261,15 +268,19 @@ class CacheAdapter implements FilesystemAdapter, ChecksumProvider
      */
     public function mimeType(string $path): FileAttributes
     {
-        return $this->getFileAttributes(
-            path: $path,
-            loader: function () use ($path) {
-                return $this->adapter->mimeType($path);
-            },
-            attributeAccessor: function (FileAttributes $fileAttributes) {
-                return $fileAttributes->mimeType();
-            },
-        );
+        try {
+            return $this->getFileAttributes(
+                path: $path,
+                loader: function () use ($path) {
+                    return $this->adapter->mimeType($path);
+                },
+                attributeAccessor: function (FileAttributes $fileAttributes) {
+                    return $fileAttributes->mimeType();
+                },
+            );
+        } catch (RuntimeException $e) {
+            throw UnableToRetrieveMetadata::mimeType($path, $e->getMessage(), $e);
+        }
     }
 
     /**
@@ -277,15 +288,19 @@ class CacheAdapter implements FilesystemAdapter, ChecksumProvider
      */
     public function lastModified(string $path): FileAttributes
     {
-        return $this->getFileAttributes(
-            path: $path,
-            loader: function () use ($path) {
-                return $this->adapter->lastModified($path);
-            },
-            attributeAccessor: function (FileAttributes $fileAttributes) {
-                return $fileAttributes->lastModified();
-            },
-        );
+        try {
+            return $this->getFileAttributes(
+                path: $path,
+                loader: function () use ($path) {
+                    return $this->adapter->lastModified($path);
+                },
+                attributeAccessor: function (FileAttributes $fileAttributes) {
+                    return $fileAttributes->lastModified();
+                },
+            );
+        } catch (RuntimeException $e) {
+            throw UnableToRetrieveMetadata::lastModified($path, $e->getMessage(), $e);
+        }
     }
 
     /**
@@ -293,15 +308,19 @@ class CacheAdapter implements FilesystemAdapter, ChecksumProvider
      */
     public function fileSize(string $path): FileAttributes
     {
-        return $this->getFileAttributes(
-            path: $path,
-            loader: function () use ($path) {
-                return $this->adapter->fileSize($path);
-            },
-            attributeAccessor: function (FileAttributes $fileAttributes) {
-                return $fileAttributes->fileSize();
-            },
-        );
+        try {
+            return $this->getFileAttributes(
+                path: $path,
+                loader: function () use ($path) {
+                    return $this->adapter->fileSize($path);
+                },
+                attributeAccessor: function (FileAttributes $fileAttributes) {
+                    return $fileAttributes->fileSize();
+                },
+            );
+        } catch (RuntimeException $e) {
+            throw UnableToRetrieveMetadata::fileSize($path, $e->getMessage(), $e);
+        }
     }
 
     /**
@@ -324,25 +343,29 @@ class CacheAdapter implements FilesystemAdapter, ChecksumProvider
             return $checksum ?? $storageAttributes->extraMetadata()[$metadataKey] ?? \null;
         };
 
-        $fileAttributes = $this->getFileAttributes(
-            path: $path,
-            loader: function () use ($path, $config, $metadataKey) {
-                // This part is "mirrored" from FileSystem class to provide the fallback mechanism
-                // and be able to cache the result
-                try {
-                    if (!$this->adapter instanceof ChecksumProvider) {
-                        throw new ChecksumAlgoIsNotSupported;
+        try {
+            $fileAttributes = $this->getFileAttributes(
+                path: $path,
+                loader: function () use ($path, $config, $metadataKey) {
+                    // This part is "mirrored" from FileSystem class to provide the fallback mechanism
+                    // and be able to cache the result
+                    try {
+                        if (!$this->adapter instanceof ChecksumProvider) {
+                            throw new ChecksumAlgoIsNotSupported;
+                        }
+
+                        $checksum = $this->adapter->checksum($path, $config);
+                    } catch (ChecksumAlgoIsNotSupported) {
+                        $checksum = $this->calculateChecksumFromStream($path, $config);
                     }
 
-                    $checksum = $this->adapter->checksum($path, $config);
-                } catch (ChecksumAlgoIsNotSupported) {
-                    $checksum = $this->calculateChecksumFromStream($path, $config);
-                }
-
-                return new FileAttributes($path, extraMetadata: [$metadataKey => $checksum]);
-            },
-            attributeAccessor: $attributeAccessor
-        );
+                    return new FileAttributes($path, extraMetadata: [$metadataKey => $checksum]);
+                },
+                attributeAccessor: $attributeAccessor
+            );
+        } catch (RuntimeException $e) {
+            throw new UnableToProvideChecksum($e->getMessage(), $path, $e);
+        }
 
         return $attributeAccessor($fileAttributes);
     }

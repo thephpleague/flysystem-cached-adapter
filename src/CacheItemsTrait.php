@@ -9,6 +9,7 @@ use League\Flysystem\FileAttributes;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use League\Flysystem\FilesystemAdapter;
+use RuntimeException;
 
 /**
  * Trait for handling cache items in CacheAdapter
@@ -119,6 +120,10 @@ trait CacheItemsTrait
         if ($item->isHit()) {
             /** @var FileAttributes $fileAttributes */
             $fileAttributes = $item->get();
+
+            if (!$fileAttributes instanceof FileAttributes) {
+                throw new RuntimeException('Cached item is not a file');
+            }
         } else {
             $fileAttributes = new FileAttributes(
                 path: $path,
