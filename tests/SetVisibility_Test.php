@@ -4,6 +4,7 @@ namespace tests\jgivoni\Flysystem\Cache;
 
 use League\Flysystem\FileAttributes;
 use League\Flysystem\StorageAttributes;
+use League\Flysystem\UnableToSetVisibility;
 use League\Flysystem\Visibility;
 
 class SetVisibility_Test extends CacheTestCase
@@ -33,5 +34,22 @@ class SetVisibility_Test extends CacheTestCase
         // Cannot test setting visibility on directory with in-memory adapter - only files
         // yield 'cached directory' => ['cached-directory', Visibility::PUBLIC, new DirectoryAttributes('fully-cached-file', visibility: Visibility::PUBLIC)];
         // yield 'cached directory, set private' => ['cached-directory', Visibility::PRIVATE, new DirectoryAttributes('fully-cached-file', visibility: Visibility::PRIVATE)];
+    }
+
+    /** 
+     * @test
+     */
+    public function cache_is_purged_after_unsuccessful_set(): void
+    {
+        $path = 'deleted-cached-file';
+
+        try {
+            $this->cacheAdapter->setVisibility($path, Visibility::PRIVATE);
+        } catch (UnableToSetVisibility $e) {
+        }
+
+        $this->assertCachedItems([
+            $path => \null,
+        ]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace tests\jgivoni\Flysystem\Cache;
 
+use League\Flysystem\UnableToDeleteDirectory;
+
 class DeleteDirectory_Test extends CacheTestCase
 {
     /** 
@@ -36,6 +38,23 @@ class DeleteDirectory_Test extends CacheTestCase
 
         $this->assertCachedItems([
             'cached-directory/file' => \null,
+        ]);
+    }
+
+    /** 
+     * @test
+     */
+    public function cache_is_purged_after_unsuccessful_delete(): void
+    {
+        $path = 'deleted-cached-directory';
+
+        try {
+            $this->cacheAdapter->deleteDirectory($path);
+        } catch (UnableToDeleteDirectory $e) {
+        }
+
+        $this->assertCachedItems([
+            $path => \null,
         ]);
     }
 }

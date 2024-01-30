@@ -9,6 +9,7 @@ use League\Flysystem\FileAttributes;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\UnableToRetrieveMetadata;
 use RuntimeException;
 
 /**
@@ -37,6 +38,14 @@ trait CacheItemsTrait
     protected function deleteCacheItem(CacheItemInterface $cacheItem): void
     {
         $this->cache->deleteItem($cacheItem->getKey());
+    }
+
+    protected function purgeCacheItem(string $path): void
+    {
+        $item = $this->getCacheItem($path);
+        if ($item->isHit()) {
+            $this->deleteCacheItem($item);
+        }
     }
 
     public static function getCacheItemKey(string $path): string

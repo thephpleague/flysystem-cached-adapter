@@ -52,13 +52,13 @@ class Read_Test extends CacheTestCase
     {
         $path = 'deleted-cached-file';
 
-        $this->expectException(UnableToReadFile::class);
-
-        $this->cacheAdapter->read($path);
-
-        $this->assertCachedItems([
-            $path => \null,
-        ]);
+        try {
+            $this->cacheAdapter->read($path);
+        } catch (UnableToReadFile $e) {
+            $this->assertCachedItems([
+                $path => \null,
+            ]);
+        }
     }
 
     /** 
@@ -68,9 +68,10 @@ class Read_Test extends CacheTestCase
     {
         $path = 'deleted-cached-file';
 
-        $this->expectException(UnableToReadFile::class);
-
-        $this->cacheAdapter->readStream($path);
+        try {
+            $this->cacheAdapter->readStream($path);
+        } catch (UnableToReadFile $e) {
+        }
 
         $this->assertCachedItems([
             $path => \null,
