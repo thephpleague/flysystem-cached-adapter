@@ -3,6 +3,8 @@
 ![QA](https://github.com/jgivoni/flysystem-cache-adapter/actions/workflows/ci.yml/badge.svg)
 
 ## Changelog highlights
+- **3.2.1**
+  - [Purge cache on unsuccessful operations](https://github.com/jgivoni/flysystem-cache-adapter/issues/14)
 - **3.2**
   - [Support for psr/cache v2](https://github.com/jgivoni/flysystem-cache-adapter/issues/10)
 - 3.1.2
