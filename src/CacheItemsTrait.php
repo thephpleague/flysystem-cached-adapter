@@ -9,6 +9,7 @@ use League\Flysystem\FileAttributes;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\UnableToProvideChecksum;
 use League\Flysystem\UnableToRetrieveMetadata;
 use RuntimeException;
 
@@ -140,7 +141,12 @@ trait CacheItemsTrait
         }
 
         if ($attributeAccessor($fileAttributes) === null) {
-            $fileAttributesExtension = $loader();
+            try {
+                $fileAttributesExtension = $loader();
+            } catch (UnableToRetrieveMetadata | UnableToProvideChecksum $e) {
+                $this->purgeCacheItem($path);
+                throw $e;
+            }
 
             $fileAttributes = self::mergeFileAttributes(
                 fileAttributesBase: $fileAttributes,

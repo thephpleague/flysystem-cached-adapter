@@ -34,6 +34,7 @@ class CacheTestCase extends TestCase
             'fully-cached-file' => new FileAttributes('fully-cached-file', 10, Visibility::PUBLIC),
             'partially-cached-file' => new FileAttributes('partially-cached-file'),
             'deleted-cached-file' => new FileAttributes('deleted-cached-file', 10, Visibility::PUBLIC),
+            'partially-cached-deleted-file' => new FileAttributes('partially-cached-deleted-file'),
             'overwritten-file' => new FileAttributes('overwritten-file', 20, Visibility::PUBLIC),
             'cached-directory' => new DirectoryAttributes('cached-directory', visibility: Visibility::PUBLIC),
             'cached-directory/file' => new FileAttributes('cached-directory/file', 10),

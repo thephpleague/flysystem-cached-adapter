@@ -7,6 +7,7 @@ use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 use League\Flysystem\Config;
 use League\Flysystem\FileAttributes;
 use League\Flysystem\UnableToProvideChecksum;
+use League\Flysystem\UnableToRetrieveMetadata;
 use Mockery;
 use Mockery\MockInterface;
 
@@ -94,5 +95,22 @@ class GetChecksum_Test extends CacheTestCase
         yield 'File not found' => ['nonexistingfile'];
         yield 'Path is directory (cached)' => ['cached-directory'];
         yield 'Path is directory (non-cached)' => ['non-cached-directory'];
+    }
+
+    /** 
+     * @test
+     */
+    public function cache_is_purged_after_unsuccessful_get(): void
+    {
+        $path = 'partially-cached-deleted-file';
+
+        try {
+            $this->cacheAdapter->checksum($path, new Config);
+        } catch (UnableToProvideChecksum $e) {
+        }
+
+        $this->assertCachedItems([
+            $path => \null,
+        ]);
     }
 }
